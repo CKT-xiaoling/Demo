@@ -7,6 +7,16 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## 项目运行命令
+<p>执行：composer install</p>
+<p>复制.env.example 重命名.env,配置数据库</p>
+<p>执行：php artisan key:generate</p>
+<p>数据库初始化：php artisan migrate</p>
+<p>初始化管理员用户：php artisan db:seed --class=UserSeeder</p>
+<p>账号：admin 密码:123456</p>
+<p>存储库软连接：php artisan storage:link</p>
+
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
