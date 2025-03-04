@@ -28,13 +28,7 @@ class AuthController extends Controller
             }
 
             if ($status) {
-                $key = 'user:' . Auth::id() . ':accessToken';
-                $token = Cache::get($key);
-                if (!$token) {
-                    // $token = auth()->attempt($credentials);
-                    $token = request()->user()->createToken("dome")->plainTextToken;
-                    Cache::put($key, $token);
-                }
+                $token = request()->user()->createToken("dome")->plainTextToken;
 
                 $data = [
                     'userAbilities' => [[
