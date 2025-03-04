@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::middleware('apiAuth')->group(function () {
+    Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'rgister']);
+    Route::get('/user_list', [\App\Http\Controllers\Api\ApiController::class, 'userList']);
+    Route::post('/update_user', [\App\Http\Controllers\Api\ApiController::class, 'updateUser']);
+    Route::post('/music_list', [\App\Http\Controllers\Api\ApiController::class, 'musicList']);
+});
 
 Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
-Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
-
-Route::get('/user_list', [\App\Http\Controllers\Api\ApiController::class, 'userList']);
-Route::post('/update_user', [\App\Http\Controllers\Api\ApiController::class, 'updateUser']);

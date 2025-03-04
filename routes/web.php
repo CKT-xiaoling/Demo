@@ -24,3 +24,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::get('/login', [\App\Http\Controllers\IndexController::class, "login"])->name('login');
 Route::get('/logout', [\App\Http\Controllers\IndexController::class, "logout"])->name('logout');
+Route::get('/download', [\App\Http\Controllers\IndexController::class, "download"])->name('download');

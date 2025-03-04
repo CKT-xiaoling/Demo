@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -16,26 +20,15 @@ class AuthController extends Controller
     public function login()
     {
         $status = false;
-        $credentials = request(['account', 'password']);
+        $credentials = request(['name', 'password']);
 
-        try{
+        try {
             if (Auth::attempt($credentials, true)) {
                 $status = true;
-            } else {
-                $credentials['phone'] = $credentials['account'];
-                unset($credentials['account']);
-                if (Auth::attempt($credentials, true)) {
-                    $status = true;
-                }
             }
 
             if ($status) {
-                $key = 'user:' . Auth::id() . ':accessToken';
-                $token = Cache::get($key);
-                if (!$token) {
-                    $token = auth()->attempt($credentials);
-                    Cache::put($key, $token);
-                }
+                $token = request()->user()->createToken("dome")->plainTextToken;
 
                 $data = [
                     'userAbilities' => [[
@@ -44,25 +37,41 @@ class AuthController extends Controller
                     ]],
                     'userData'      => request()->user(),
                     'accessToken'   => $token,
-                    'token_type'    => 'bearer',
                 ];
-                return response()->json($data);
+                return response()->json($data)->cookie("accessToken", $token);
             }
-        }catch(\Exception $e){
-            return response()->json(['errors' => ['account' => '登录失败，账号或密码错误']], 401);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 401);
         }
 
-        return response()->json(['errors' => ['account' => '登录失败，账号或密码错误']], 401);
+        return response()->json(['message' => '登录失败，账号或密码错误'], 401);
     }
 
     public function logout()
     {
         Auth::logout();
-        return Tool::succeed_msg('退出成功');
     }
 
-    public function refresh()
+    public function register(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name'     => 'required|string|max:255|unique:users',
+            'email'    => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:4',
+            'role'     => 'required|string',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->messages()->all()[0]], 401);
+        }
+
+        User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'role'     => $request->role,
+        ]);
+
+        return response()->json(['message' => "注册成功"]);
     }
 }
