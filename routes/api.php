@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::middleware('apiAuth')->group(function () {
-    Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'rgister']);
+    Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
     Route::get('/user_list', [\App\Http\Controllers\Api\ApiController::class, 'userList']);
     Route::post('/update_user', [\App\Http\Controllers\Api\ApiController::class, 'updateUser']);
     Route::post('/music_list', [\App\Http\Controllers\Api\ApiController::class, 'musicList']);
